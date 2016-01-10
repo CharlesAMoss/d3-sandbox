@@ -1,4 +1,4 @@
-d3.select("h1").style("font-weight", "200");
+// d3.select("h1").style("font-weight", "200");
 
 // d3.selectAll("p").style("color", function() {
 //   return "hsl(" + Math.random() * 360 + ",100%,50%)";
@@ -30,11 +30,11 @@ d3.select("body").transition()
     .duration(2000)
     .style("background-color", "#c1c1c1");
 
-d3.json('test.json', function(error, data) {
-    console.log(error);
-    console.log(data);
-
-});
+// d3.json('test.json', function(error, data) {
+//     console.log(error);
+//     console.log(data);
+//
+// });
 
 var height = 500,
      width = 800;
@@ -47,27 +47,54 @@ var viz = d3.select("#viz-wrapper")
                 .attr('height', height)
                 .attr('width', width);
 
+var yScale = d3.scale.linear()
+                        .range([height, 0 ]);
+
 d3.csv('climate_data.csv', function(data) {
+    // yMax = d3.max(data, function(element) {
+    //     return parseInt(element.TMAX);
+    // });
+    //
+    // yMin = d3.min(data, function(element) {
+    //     return parseInt(element.TMAX);
+    // });
+
+    yDomain = d3.extent(data, function(element) {
+        return parseInt(element.TMAX);
+    });
+
+    yScale.domain(yDomain);
+
     dots = viz.selectAll('circle')
                 .data(data)
                 .enter()
                 .append('circle');
 
-    dots.attr('r', function(d, i) {
-        return Math.abs(d.TMAX) / 10; })
-        .attr('cx', function(d) {return Math.max(0 + padding, Math.random() * width - padding ); })
-        .attr('cy', function(d) {return Math.max(0 + padding, Math.random() * height - padding ); })
+    dots.attr('r', 5)
+        .attr('cx', function(d) {
+          return Math.max(0 + padding, Math.random() * width - padding); })
+        .attr('cy', function(d) {
+          return yScale(d.TMAX); })
         .style('stroke', '#f1f1f1')
         .style('stroke-width', '2px')
-        .style('fill', function(d) {
-            year = d.DATE.charAt(3);
-            if (year === '3') {
-                return "#b3b3b3";
-            }
-            else {
-                return "#d9d9d9";
-            }
-        });
+        .style('fill', '#b3b3b3');
+
+
+    // dots.attr('r', function(d, i) {
+    //     return Math.abs(d.TMAX) / 10; })
+    //     .attr('cx', function(d) {return Math.max(0 + padding, Math.random() * width - padding ); })
+    //     .attr('cy', function(d) {return Math.max(0 + padding, Math.random() * height - padding ); })
+    //     .style('stroke', '#f1f1f1')
+    //     .style('stroke-width', '2px')
+    //     .style('fill', function(d) {
+    //         year = d.DATE.charAt(3);
+    //         if (year === '3') {
+    //             return "#b3b3b3";
+    //         }
+    //         else {
+    //             return "#d9d9d9";
+    //         }
+    //     });
 });
 
 
