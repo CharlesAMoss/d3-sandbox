@@ -50,36 +50,50 @@ var viz = d3.select("#viz-wrapper")
 var yScale = d3.scale.linear()
                         .range([height, 0 ]);
 
+var xScale = d3.time.scale()
+                        .range([0, width]);
+
+var parseTime = d3.time.format("%Y%m%d");
+
 d3.csv('climate_data.csv', function(data) {
-    // yMax = d3.max(data, function(element) {
-    //     return parseInt(element.TMAX);
-    // });
-    //
-    // yMin = d3.min(data, function(element) {
-    //     return parseInt(element.TMAX);
-    // });
+    yDomain = d3.extent(data, function(element) {
+        return parseInt(element.TMAX);
+    });
 
     yDomain = d3.extent(data, function(element) {
         return parseInt(element.TMAX);
     });
 
+    xDomain = d3.extent(data, function(element) {
+       return parseTime.parse(element.DATE);
+    });
+
     yScale.domain(yDomain);
+    xScale.domain(xDomain);
 
     dots = viz.selectAll('circle')
                 .data(data)
                 .enter()
                 .append('circle');
 
-    dots.attr('r', 5)
-        .attr('cx', function(d) {
-          return Math.max(0 + padding, Math.random() * width - padding); })
+    dots.attr('r', 10)
+    .attr('cx', function(d) {
+            date = parseTime.parse(d.DATE);
+            return xScale(date); })
         .attr('cy', function(d) {
-          return yScale(d.TMAX); })
+            return yScale(d.TMAX); })
         .style('stroke', '#f1f1f1')
         .style('stroke-width', '2px')
-        .style('fill', '#b3b3b3');
-
-
+        .style('fill', '#b3b3b3')
+        .style('fill', function(d) {
+            year = d.DATE.charAt(3);
+            if (year === '3') {
+                return "#b3b3b3";
+            }
+            else {
+                return "#d9d9d9";
+            }
+        });
     // dots.attr('r', function(d, i) {
     //     return Math.abs(d.TMAX) / 10; })
     //     .attr('cx', function(d) {return Math.max(0 + padding, Math.random() * width - padding ); })
