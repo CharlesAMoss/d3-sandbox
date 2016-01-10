@@ -76,24 +76,25 @@ d3.csv('climate_data.csv', function(data) {
                 .enter()
                 .append('circle');
 
-    dots.attr('r', 10)
-    .attr('cx', function(d) {
+    dots.attr('r', function(d, i) {
+            return Math.abs(d.TMAX) / 8; })
+        .attr('cx', function(d) {
             date = parseTime.parse(d.DATE);
             return xScale(date); })
         .attr('cy', function(d) {
             return yScale(d.TMAX); })
         .style('stroke', '#f1f1f1')
         .style('stroke-width', '2px')
-        .style('fill', '#b3b3b3')
         .style('fill', function(d) {
             year = d.DATE.charAt(3);
-            if (year === '3') {
-                return "#b3b3b3";
-            }
-            else {
-                return "#d9d9d9";
-            }
+            return year === '3' ? '#b3b3b3' : '#d9d9d9';
+        })
+        .style('stroke', function(d) {
+            year = d.DATE.charAt(3);
+            return year === '3' ? '#f1f1f1' : '#a3a3a3';
         });
+
+
     // dots.attr('r', function(d, i) {
     //     return Math.abs(d.TMAX) / 10; })
     //     .attr('cx', function(d) {return Math.max(0 + padding, Math.random() * width - padding ); })
