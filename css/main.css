@@ -48,6 +48,14 @@ h1 {
   fill: #333;
 }
 
+.axis line,
+.axis path {
+  stroke-width: 1;
+  fill: none;
+  stroke: #333;
+  shape-rendering: crispEdges;
+}
+
 
 /* clear fix ================ */
 
